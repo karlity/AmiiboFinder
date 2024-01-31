@@ -1,2 +1,2 @@
-# plantApp
-Mobile App for looking at plants
+# Amiibo Finder
+Mobile App for finding your favorite Nintendo Amiibo

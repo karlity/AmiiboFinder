@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.github.karlity.plantapp.domain"
+    namespace = "com.github.karlity.amiibofinder.domain"
     compileSdk = 34
 
     defaultConfig {
@@ -19,25 +20,36 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
 dependencies {
+    implementation(project(":core"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    // Koin
+    implementation(platform(libs.koin.bom))
+    implementation(platform(libs.koin.annotations.bom))
+    implementation(libs.koin.annotations)
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    ksp(libs.koin.ksp.compiler)
+
+    // Testing
+    testImplementation(libs.test.junit)
+    androidTestImplementation(libs.test.junit.androidx)
+    androidTestImplementation(libs.test.espresso.core)
 }

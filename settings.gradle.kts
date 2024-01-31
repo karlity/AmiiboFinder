@@ -19,9 +19,10 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Plant App"
+rootProject.name = "Amiibo Finder"
 include(":app")
 include(":remote-datasource")
 include(":data")
 include(":domain")
 include(":presentation")
+include(":core")
