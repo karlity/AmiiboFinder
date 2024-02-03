@@ -59,6 +59,10 @@ class AmiiboFilterViewModel(
                     loadingState = LoadingState.IDLE,
                 )
             }
+        }.onFailure {
+            _uiState.update {
+                it.copy(loadingState = LoadingState.ERROR)
+            }
         }
     }
 
@@ -72,10 +76,14 @@ class AmiiboFilterViewModel(
                     loadingState = LoadingState.IDLE,
                 )
             }
+        }.onFailure {
+            _uiState.update {
+                it.copy(loadingState = LoadingState.ERROR)
+            }
         }
     }
 
-    private suspend fun getTypeList() {
+    private fun getTypeList() {
         _uiState.update {
             it.copy(
                 filterCriteria = AmiiboFilterCritera.TYPE,
@@ -94,6 +102,12 @@ class AmiiboFilterViewModel(
                 characterList = null,
                 loadingState = LoadingState.IDLE,
             )
+        }
+    }
+
+    fun dismissError() {
+        _uiState.update {
+            it.copy(loadingState = LoadingState.IDLE)
         }
     }
 }

@@ -61,4 +61,10 @@ class AmiiboListViewModel(
             }
         }
     }
+
+    fun dismissError() {
+        _uiState.update {
+            it.copy(loadingState = LoadingState.IDLE)
+        }
+    }
 }

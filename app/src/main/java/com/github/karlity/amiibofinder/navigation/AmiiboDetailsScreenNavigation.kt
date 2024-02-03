@@ -21,7 +21,5 @@ fun NavGraphBuilder.amiiboDetailsScreen(onNavigateBack: () -> Unit) {
 }
 
 fun NavController.navigateToAmiiboDetails(amiiboId: String) {
-    this.navigate(amiiboDetailsRoute.replace(amiiboIdArg, amiiboId)) {
-        popUpTo(amiiboFilterRoute)
-    }
+    this.navigate(amiiboDetailsRoute.replace(amiiboIdArg, amiiboId))
 }

@@ -7,9 +7,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun AmiiboLoadingAndErrorStateHandler(loadingState: LoadingState) {
+fun AmiiboLoadingAndErrorStateHandler(
+    loadingState: LoadingState,
+    errorTitle: String? = null,
+    errorMessage: String? = null,
+    onErrorConfirmationClick: () -> Unit,
+    onErrorDismiss: () -> Unit,
+) {
     when (loadingState) {
         LoadingState.LOADING -> {
             Column(
@@ -22,10 +29,23 @@ fun AmiiboLoadingAndErrorStateHandler(loadingState: LoadingState) {
         }
 
         LoadingState.ERROR -> {
+            AmiiboErrorDialog(
+                errorTitle = errorTitle,
+                errorMessage = errorMessage,
+                onConfirmButtonClick = onErrorConfirmationClick,
+                onDismiss = onErrorDismiss,
+            )
         }
 
         else -> {
             // no op
         }
+    }
+}
+
+@Composable
+@Preview
+private fun AmiiboLoadingAndErrorStateHandlerPreview() {
+    AmiiboLoadingAndErrorStateHandler(loadingState = LoadingState.ERROR, onErrorConfirmationClick = { }) {
     }
 }

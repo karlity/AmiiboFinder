@@ -41,7 +41,17 @@ fun AmiiboDetailsScreen(
         }
     }
 
-    AmiiboLoadingAndErrorStateHandler(loadingState = state.value.loadingState)
+    AmiiboLoadingAndErrorStateHandler(
+        loadingState = state.value.loadingState,
+        onErrorDismiss = { amiiboDetailsViewModel.dismissError() },
+        onErrorConfirmationClick = {
+            amiiboId?.let {
+                amiiboDetailsViewModel.fetchAmiiboDetails(
+                    amiiboId,
+                )
+            } ?: onNavigateBack()
+        },
+    )
 }
 
 @Composable

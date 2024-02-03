@@ -47,7 +47,15 @@ fun AmiiboFilterScreen(
         }
     }
 
-    AmiiboLoadingAndErrorStateHandler(loadingState = state.value.loadingState)
+    AmiiboLoadingAndErrorStateHandler(
+        loadingState = state.value.loadingState,
+        onErrorDismiss = { amiiboFilterViewModel.dismissError() },
+        onErrorConfirmationClick = {
+            state.value.filterCriteria?.let { filter ->
+                amiiboFilterViewModel.setFilterCriteria(filterCritera = filter)
+            } ?: amiiboFilterViewModel.resetFilter()
+        },
+    )
 
     BackHandler(state.value.filterCriteria != null) {
         amiiboFilterViewModel.resetFilter()

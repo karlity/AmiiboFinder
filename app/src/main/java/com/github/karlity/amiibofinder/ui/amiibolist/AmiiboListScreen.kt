@@ -53,7 +53,17 @@ fun AmiiboListScreen(
         }
     }
 
-    AmiiboLoadingAndErrorStateHandler(loadingState = state.value.loadingState)
+    AmiiboLoadingAndErrorStateHandler(
+        loadingState = state.value.loadingState,
+        onErrorDismiss = { amiiboListViewModel.dismissError() },
+        onErrorConfirmationClick = {
+            amiiboListViewModel.fetchAmiibos(
+                typeId = typeId,
+                characterName = characterName,
+                gameSeriesName = gameSeriesName,
+            )
+        },
+    )
 }
 
 @Composable

@@ -27,6 +27,7 @@ fun AmiiboNavGraph(modifier: Modifier) {
         }
 
         amiiboDetailsScreen {
+            navController.popBackStack()
         }
     }
 }

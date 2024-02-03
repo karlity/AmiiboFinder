@@ -20,8 +20,18 @@
     <string name="character_label">Character:</string>
     <string name="game_series_label">Game Series:</string>
     <string name="amiibo_name_label">Amiibo Name:</string>
-
     <string name="type_label">Type:</string>
+    <string name="release_label">Released:</string>
+    <string name="north_america_release_label">North America:</string>
+    <string name="japan_release_label">Japan:</string>
+    <string name="europe_release_label">Europe:</string>
+    <string name="australia_release_label">Australia:</string>
+
+    <string name="generic_error_title">Something Went Wrong</string>
+    <string name="generic_error_message">Please check your internet and try again</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+
 
 
 

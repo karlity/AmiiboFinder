@@ -1,6 +1,5 @@
 package com.github.karlity.amiibofinder.ui.amiibofilter.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,8 +27,7 @@ fun FilterTypeItem(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable { onFilterSelect(type) },
+                    .padding(16.dp),
         ) {
             Text(
                 text = type.text,
