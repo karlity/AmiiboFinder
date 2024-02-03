@@ -1,16 +1,16 @@
 package com.github.karlity.amiibofinder.ui.amiibofilter
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.github.karlity.amiibofinder.ui.amiibofilter.components.AmiiboFilterSelectionView
 import com.github.karlity.amiibofinder.ui.amiibofilter.components.FilterList
+import com.github.karlity.amiibofinder.ui.shared.AmiiboLoadingAndErrorStateHandler
+import com.github.karlity.amiibofinder.ui.shared.AmiiboTopAppBar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -20,37 +20,35 @@ fun AmiiboFilterScreen(
 ) {
     val state = amiiboFilterViewModel.uiState.collectAsState()
 
-    FilterList(
-        filterCriteria = state.value.filterCriteria,
-        gameSeriesList = state.value.gameSeriesList,
-        characterList = state.value.characterList,
-        onTypeSelect = { onNavigateToAmiiboList(it.key, null, null) },
-        onCharacterSelect = { onNavigateToAmiiboList(null, it, null) },
-        onGameSeriesSelect = { onNavigateToAmiiboList(null, null, it) },
-        typeList = state.value.typeList,
-    )
-    AmiiboFilterSelectionView(filterCriteria = state.value.filterCriteria) { filter ->
-        amiiboFilterViewModel.setFilterCriteria(filter)
-    }
-
-    when (state.value.loadingState) {
-        LoadingState.LOADING -> {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                CircularProgressIndicator()
+    Scaffold(
+        topBar = {
+            // We only want to show the TopAppBar after the filter is selected
+            state.value.filterCriteria?.stringRes?.let {
+                AmiiboTopAppBar(
+                    title =
+                        stringResource(it),
+                    onNavigateBack = { amiiboFilterViewModel.resetFilter() },
+                )
             }
-        }
-
-        LoadingState.ERROR -> {
-        }
-
-        else -> {
-            // no op
+        },
+    ) { paddingValues ->
+        FilterList(
+            modifier = Modifier.padding(paddingValues),
+            filterCriteria = state.value.filterCriteria,
+            gameSeriesList = state.value.gameSeriesList,
+            characterList = state.value.characterList,
+            onTypeSelect = { onNavigateToAmiiboList(it.key, null, null) },
+            onCharacterSelect = { onNavigateToAmiiboList(null, it, null) },
+            onGameSeriesSelect = { onNavigateToAmiiboList(null, null, it) },
+            typeList = state.value.typeList,
+        )
+        AmiiboFilterSelectionView(filterCriteria = state.value.filterCriteria) { filter ->
+            amiiboFilterViewModel.setFilterCriteria(filter)
         }
     }
+
+    AmiiboLoadingAndErrorStateHandler(loadingState = state.value.loadingState)
+
     BackHandler(state.value.filterCriteria != null) {
         amiiboFilterViewModel.resetFilter()
     }

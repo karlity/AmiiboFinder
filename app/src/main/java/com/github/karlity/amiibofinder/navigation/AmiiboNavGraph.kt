@@ -15,6 +15,18 @@ fun AmiiboNavGraph(modifier: Modifier) {
         modifier = modifier,
     ) {
         amiiboFilterScreen { typeId, characterName, gameSeriesName ->
+            navController.navigateToAmiiboListScreen(typeId, characterName, gameSeriesName)
+        }
+
+        amiiboListScreen(
+            onNavigateToAmiiboDetailScreen = { amiiboId ->
+                navController.navigateToAmiiboDetails(amiiboId = amiiboId)
+            },
+        ) {
+            navController.popBackStack()
+        }
+
+        amiiboDetailsScreen {
         }
     }
 }

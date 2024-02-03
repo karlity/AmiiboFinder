@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.karlity.amiibofinder.domain.interactor.GetCharacterList
 import com.github.karlity.amiibofinder.domain.interactor.GetGameSeriesList
+import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

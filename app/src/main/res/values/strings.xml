@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Amiibo Finder</string>
 
+    <string name="amibo_list_title">Amiibo List</string>
+
     <string name="select_search_criteria">Please select how you\'d like to find your Amiibo!</string>
     <string name="by">By</string>
 
@@ -10,6 +12,18 @@
 
     <string name="disclaimer_text">This product is NOT licensed by Nintendo\u2122 or any Nintendo\u2122 Affiliates</string>
     <string name="disclaimer_text_fine_print">Please do not cease and desist me, Nintendo\u2122 🥺🥺🥺</string>
+
+    <string name="amiibo_image_content_description">Amiibo Image</string>
+    <string name="navigate_back_content_description">Navigate Back Button</string>
+
+    <string name="amiibo_series_label">Amiibo Series:</string>
+    <string name="character_label">Character:</string>
+    <string name="game_series_label">Game Series:</string>
+    <string name="amiibo_name_label">Amiibo Name:</string>
+
+    <string name="type_label">Type:</string>
+
+
 
 
 </resources>

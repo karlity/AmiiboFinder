@@ -1,30 +1,49 @@
 package com.github.karlity.amiibofinder.domain.repository
 
 import com.github.karlity.amiibofinder.core.models.AmiiboList
+import com.github.karlity.amiibofinder.core.models.AmiiboSingle
 import com.github.karlity.amiibofinder.core.models.FilterCriteriaResponseList
-import com.github.karlity.amiibofinder.core.models.Type
 
 interface AmiiboRepository {
     /**
-     * Sends a request to fetch all registered Amiibos
+     * Sends a request to fetch the registered Amiibo by its specified ID
      *
-     * @return Result<AmiiboList> with a success case containing a list of all registered Amiibos
+     * @param amiiboId - ID for the Amiibo to be fetched
+     *
+     * @return Result<AmiiboList> with a success case containing a single registered Amiibo
+     *
      */
-    suspend fun getAllAmiibos(): Result<AmiiboList>
+    suspend fun getAmiiboByAmiiboId(amiiboId: String): Result<AmiiboSingle>
 
     /**
-     * Sends a request to fetch all registered Amiibos by a specified name and/or type
+     * Sends a request to fetch all registered Amiibos by a specified typeId
      *
-     * @param name = the name of the Amiibo being fetched
-     * @param type = the type of the Amiibo being fetched
+     * @param typeId - the ID of a selected type specified by the api
      *
      * @return Result<AmiiboList> with a success case containing a list of all registered Amiibos of
-     * the specified name and/or type
+     * the specified typeId
      */
-    suspend fun getAmiibosByNameAndType(
-        name: String?,
-        type: Type?,
-    ): Result<AmiiboList>
+    suspend fun getAmiibosByTypeId(typeId: String): Result<AmiiboList>
+
+    /**
+     * Sends a request to fetch all registered Amiibos by a specified name of a game series
+     *
+     * @param gameSeriesName - name of a selected game series
+     *
+     * @return Result<AmiiboList> with a success case containing a list of all registered Amiibos of
+     * a specified name of a game series name
+     */
+    suspend fun getAmiibosByGameSeriesName(gameSeriesName: String): Result<AmiiboList>
+
+    /**
+     * Sends a request to fetch all registered Amiibos by a specified typeId
+     *
+     * @param characterName - the name of a selected character
+     *
+     * @return Result<AmiiboList> with a success case containing a list of all registered Amiibos of
+     * the specified character name
+     */
+    suspend fun getAmiibosByCharacterName(characterName: String): Result<AmiiboList>
 
     /**
      * Sends a request to fetch all game series that include Amiibos

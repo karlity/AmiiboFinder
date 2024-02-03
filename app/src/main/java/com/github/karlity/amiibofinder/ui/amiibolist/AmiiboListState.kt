@@ -1,7 +1,7 @@
-package com.github.karlity.amiibofinder.ui.amiibodetail
+package com.github.karlity.amiibofinder.ui.amiibolist
 
 import com.github.karlity.amiibofinder.core.models.AmiiboList
-import com.github.karlity.amiibofinder.ui.amiibofilter.LoadingState
+import com.github.karlity.amiibofinder.ui.shared.LoadingState
 
 data class AmiiboListState(
     val loadingState: LoadingState = LoadingState.IDLE,

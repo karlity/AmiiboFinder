@@ -3,6 +3,7 @@ package com.github.karlity.amiibofinder.ui.amiibofilter
 import com.github.karlity.amiibofinder.R
 import com.github.karlity.amiibofinder.core.models.FilterCriteriaResponseList
 import com.github.karlity.amiibofinder.core.models.Type
+import com.github.karlity.amiibofinder.ui.shared.LoadingState
 
 data class AmiiboFilterState(
     val characterList: FilterCriteriaResponseList? = null,
@@ -17,11 +18,4 @@ enum class AmiiboFilterCritera(val stringRes: Int) {
     CHARACTER(R.string.character),
     GAME(R.string.game_series),
     TYPE(R.string.type),
-}
-
-enum class LoadingState {
-    IDLE,
-    LOADING,
-    ERROR,
-    FINISHED,
 }

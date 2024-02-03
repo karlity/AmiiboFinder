@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,16 +17,24 @@ fun FilterTypeItem(
     type: Type,
     onFilterSelect: (Type) -> Unit,
 ) {
-    Row(
+    Card(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .clickable { onFilterSelect(type) },
+                .padding(10.dp),
+        onClick = { onFilterSelect(type) },
     ) {
-        Text(
-            text = type.text,
-            style = MaterialTheme.typography.headlineMedium,
-        )
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable { onFilterSelect(type) },
+        ) {
+            Text(
+                text = type.text,
+                style = MaterialTheme.typography.headlineMedium,
+            )
+        }
     }
 }

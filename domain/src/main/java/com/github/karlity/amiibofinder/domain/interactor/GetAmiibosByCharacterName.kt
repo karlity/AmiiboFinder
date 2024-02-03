@@ -7,8 +7,8 @@ import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
 
 @Single
-class GetAllAmiibos(
+class GetAmiibosByCharacterName(
     @Named(Qualifiers.AMIIBO_REPOSITORY) val amiiboRepository: AmiiboRepository,
 ) {
-    suspend operator fun invoke(): Result<AmiiboList> = amiiboRepository.getAllAmiibos()
+    suspend operator fun invoke(characterName: String): Result<AmiiboList> = amiiboRepository.getAmiibosByCharacterName(characterName)
 }

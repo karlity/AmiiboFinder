@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.compose.navigation)
     implementation(libs.compose.animation)
+    implementation(libs.compose.coil)
 
     // Koin
     implementation(platform(libs.koin.bom))
