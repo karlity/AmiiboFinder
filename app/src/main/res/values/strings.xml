@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Amiibo Finder</string>
+
+    <string name="select_search_criteria">Please select how you\'d like to find your Amiibo!</string>
+    <string name="by">By</string>
+
+    <string name="type">Type</string>
+    <string name="game_series">Game Series</string>
+    <string name="character">Character</string>
+
+    <string name="disclaimer_text">This product is NOT licensed by Nintendo\u2122 or any Nintendo\u2122 Affiliates</string>
+    <string name="disclaimer_text_fine_print">Please do not cease and desist me, Nintendo\u2122 🥺🥺🥺</string>
+
+
 </resources>

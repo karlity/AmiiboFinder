@@ -2,6 +2,7 @@ package com.github.karlity.amiibofinder.data.repository
 
 import com.github.karlity.amiibofinder.core.Qualifiers
 import com.github.karlity.amiibofinder.core.models.AmiiboList
+import com.github.karlity.amiibofinder.core.models.FilterCriteriaResponseList
 import com.github.karlity.amiibofinder.core.models.Type
 import com.github.karlity.amiibofinder.data.remote.AmiiboService
 import com.github.karlity.amiibofinder.domain.repository.AmiiboRepository
@@ -22,5 +23,13 @@ class AmiiboRepositoryImpl(
         type: Type?,
     ): Result<AmiiboList> {
         return amiiboService.getAmiibosByNameAndType(name = name, type = type)
+    }
+
+    override suspend fun getGameSeriesList(): Result<FilterCriteriaResponseList> {
+        return amiiboService.getGameSeriesList()
+    }
+
+    override suspend fun getCharacterList(): Result<FilterCriteriaResponseList> {
+        return amiiboService.getCharacterList()
     }
 }
