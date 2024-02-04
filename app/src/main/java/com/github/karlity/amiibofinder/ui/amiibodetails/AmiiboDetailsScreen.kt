@@ -30,9 +30,11 @@ fun AmiiboDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = state.value.amiibo == null) {
-        amiiboId?.let {
-            amiiboDetailsViewModel.fetchAmiiboDetails(amiiboId)
-        } ?: amiiboDetailsViewModel.setError()
+        if (state.value.amiibo == null) {
+            amiiboId?.let {
+                amiiboDetailsViewModel.fetchAmiiboDetails(amiiboId)
+            } ?: amiiboDetailsViewModel.setError()
+        }
     }
 
     Scaffold(
@@ -60,7 +62,6 @@ fun AmiiboDetailsScreen(
             EmptyState()
         }
     }
-
     AmiiboLoadingAndErrorStateHandler(
         loadingState = state.value.loadingState,
         onErrorDismiss = { amiiboDetailsViewModel.dismissError() },

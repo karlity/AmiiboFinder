@@ -37,7 +37,9 @@ fun AmiiboFilterScreen(
                 AmiiboTopAppBar(
                     title =
                         stringResource(it),
-                    onNavigateBack = { amiiboFilterViewModel.resetFilter() },
+                    onNavigateBack = {
+                        amiiboFilterViewModel.resetFilter()
+                    },
                 )
             }
         },
