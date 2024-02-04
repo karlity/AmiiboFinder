@@ -82,7 +82,17 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Testing
+    // Testing
     testImplementation(libs.test.junit)
+    testImplementation(libs.test.junit.androidx)
+    testImplementation(libs.test.koin)
+    testImplementation(libs.test.koin.android)
+    testImplementation(libs.test.koin.junit)
+    testImplementation(libs.test.mockK)
+    testImplementation(libs.test.mockK.android)
+    testImplementation(libs.test.mockK.agent)
+    testImplementation(libs.test.coroutines)
+    implementation("androidx.arch.core:core-testing:2.1.0")
     androidTestImplementation(libs.test.junit.androidx)
     androidTestImplementation(libs.test.espresso.core)
 }

@@ -1,14 +1,13 @@
 package com.github.karlity.amiibofinder.ui.amiibofilter
 
+import AmiiboErrors
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.karlity.amiibofinder.domain.interactor.GetCharacterList
 import com.github.karlity.amiibofinder.domain.interactor.GetGameSeriesList
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -19,12 +18,7 @@ class AmiiboFilterViewModel(
     private val getCharacterList: GetCharacterList,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AmiiboFilterState())
-    val uiState: StateFlow<AmiiboFilterState> =
-        _uiState.stateIn(
-            scope = viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            initialValue = _uiState.value,
-        )
+    val uiState: StateFlow<AmiiboFilterState> = _uiState
 
     fun setFilterCriteria(filterCritera: AmiiboFilterCritera) {
         viewModelScope.launch {
@@ -60,8 +54,9 @@ class AmiiboFilterViewModel(
                 )
             }
         }.onFailure {
+            val errorState = if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
             _uiState.update {
-                it.copy(loadingState = LoadingState.ERROR)
+                it.copy(loadingState = errorState)
             }
         }
     }
@@ -77,8 +72,9 @@ class AmiiboFilterViewModel(
                 )
             }
         }.onFailure {
+            val errorState = if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
             _uiState.update {
-                it.copy(loadingState = LoadingState.ERROR)
+                it.copy(loadingState = errorState)
             }
         }
     }

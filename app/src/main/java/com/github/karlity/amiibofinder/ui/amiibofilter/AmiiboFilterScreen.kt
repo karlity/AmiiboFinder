@@ -2,11 +2,17 @@ package com.github.karlity.amiibofinder.ui.amiibofilter
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.github.karlity.amiibofinder.ui.amiibofilter.components.AmiiboFilterSelectionView
 import com.github.karlity.amiibofinder.ui.amiibofilter.components.FilterList
 import com.github.karlity.amiibofinder.ui.shared.AmiiboLoadingAndErrorStateHandler
@@ -19,6 +25,7 @@ fun AmiiboFilterScreen(
     onNavigateToAmiiboList: (typeId: String?, characterName: String?, gameSeriesName: String?) -> Unit,
 ) {
     val state = amiiboFilterViewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         topBar = {
@@ -28,6 +35,14 @@ fun AmiiboFilterScreen(
                     title =
                         stringResource(it),
                     onNavigateBack = { amiiboFilterViewModel.resetFilter() },
+                )
+            }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(
+                    shape = RoundedCornerShape(7.dp),
+                    snackbarData = it,
                 )
             }
         },
@@ -49,6 +64,7 @@ fun AmiiboFilterScreen(
 
     AmiiboLoadingAndErrorStateHandler(
         loadingState = state.value.loadingState,
+        snackbarState = snackbarHostState,
         onErrorDismiss = { amiiboFilterViewModel.dismissError() },
         onErrorConfirmationClick = {
             state.value.filterCriteria?.let { filter ->

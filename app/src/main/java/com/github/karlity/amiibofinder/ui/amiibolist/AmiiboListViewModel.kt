@@ -7,11 +7,10 @@ import com.github.karlity.amiibofinder.domain.interactor.GetAmiibosByGameSeriesN
 import com.github.karlity.amiibofinder.domain.interactor.GetAmiibosByTypeId
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
@@ -21,12 +20,7 @@ class AmiiboListViewModel(
     private val getAmiibosByTypeId: GetAmiibosByTypeId,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AmiiboListState())
-    val uiState: StateFlow<AmiiboListState> =
-        _uiState.stateIn(
-            scope = viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            initialValue = _uiState.value,
-        )
+    val uiState: StateFlow<AmiiboListState> = _uiState
 
     // The intention is that only one of these parameters gets passed through
     fun fetchAmiibos(
@@ -57,6 +51,11 @@ class AmiiboListViewModel(
             result.onSuccess { amiiboList ->
                 _uiState.update {
                     it.copy(loadingState = LoadingState.IDLE, amiiboList = amiiboList)
+                }
+            }.onFailure {
+                val errorState = if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
+                _uiState.update { state ->
+                    state.copy(loadingState = errorState)
                 }
             }
         }

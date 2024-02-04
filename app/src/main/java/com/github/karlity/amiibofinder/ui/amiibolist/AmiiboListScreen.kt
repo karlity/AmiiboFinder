@@ -2,13 +2,19 @@ package com.github.karlity.amiibofinder.ui.amiibolist
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.github.karlity.amiibofinder.R
 import com.github.karlity.amiibofinder.ui.amiibolist.components.AmiiboList
 import com.github.karlity.amiibofinder.ui.shared.AmiiboLoadingAndErrorStateHandler
@@ -25,6 +31,7 @@ fun AmiiboListScreen(
     onNavigateBack: () -> Unit,
 ) {
     val state = amiiboListViewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = state.value.amiiboList == null) {
         amiiboListViewModel.fetchAmiibos(
@@ -41,6 +48,14 @@ fun AmiiboListScreen(
                 onNavigateBack = onNavigateBack,
             )
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(
+                    shape = RoundedCornerShape(7.dp),
+                    snackbarData = it,
+                )
+            }
+        },
     ) { paddingValues ->
         AmiiboList(
             amiiboList = state.value.amiiboList,
@@ -56,6 +71,7 @@ fun AmiiboListScreen(
     AmiiboLoadingAndErrorStateHandler(
         loadingState = state.value.loadingState,
         onErrorDismiss = { amiiboListViewModel.dismissError() },
+        snackbarState = snackbarHostState,
         onErrorConfirmationClick = {
             amiiboListViewModel.fetchAmiibos(
                 typeId = typeId,

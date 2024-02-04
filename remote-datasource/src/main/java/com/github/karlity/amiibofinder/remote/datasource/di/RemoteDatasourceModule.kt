@@ -1,5 +1,6 @@
 package com.github.karlity.amiibofinder.remote.datasource.di
 
+import com.github.karlity.amiibofinder.core.Qualifiers.AMIIBO_RETROFIT_CLIENT
 import com.github.karlity.amiibofinder.remote.datasource.BuildConfig
 import com.github.karlity.amiibofinder.remote.datasource.services.api.AmiiboApi
 import com.squareup.moshi.Moshi
@@ -12,8 +13,6 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-private const val RETROFIT_CLIENT = "RETROFIT_CLIENT"
-
 val remoteDatasourceModule =
     module {
         single<Moshi> {
@@ -22,7 +21,7 @@ val remoteDatasourceModule =
                 .build()
         }
 
-        single<Retrofit>(named(RETROFIT_CLIENT)) {
+        single<Retrofit>(named(AMIIBO_RETROFIT_CLIENT)) {
             Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_URL)
                 .client(OkHttpClient.Builder().build())
@@ -31,7 +30,7 @@ val remoteDatasourceModule =
         }
 
         single<AmiiboApi> {
-            val retrofit = get<Retrofit>(named(RETROFIT_CLIENT))
+            val retrofit = get<Retrofit>(named(AMIIBO_RETROFIT_CLIENT))
             retrofit.create(AmiiboApi::class.java)
         }
     }

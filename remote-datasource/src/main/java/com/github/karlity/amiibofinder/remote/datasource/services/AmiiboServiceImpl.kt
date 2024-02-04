@@ -1,5 +1,6 @@
 package com.github.karlity.amiibofinder.remote.datasource.services
 
+import AmiiboErrors
 import com.github.karlity.amiibofinder.core.Qualifiers
 import com.github.karlity.amiibofinder.core.models.AmiiboList
 import com.github.karlity.amiibofinder.core.models.AmiiboSingle
@@ -8,6 +9,7 @@ import com.github.karlity.amiibofinder.data.remote.AmiiboService
 import com.github.karlity.amiibofinder.remote.datasource.services.api.AmiiboApi
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
+import java.io.IOException
 
 @Single(binds = [AmiiboService::class])
 @Named(Qualifiers.AMIIBO_SERVICE)
@@ -17,12 +19,15 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
             val response = amiiboApi.getAmiiboByAmiiboId(amiiboId)
             val data = response.body()
             return if (data == null) {
-                Result.failure(Throwable("null"))
+                Result.failure(AmiiboErrors.NoResults)
             } else {
                 Result.success(data)
             }
         }.onFailure {
-            return Result.failure(it)
+            return when (it) {
+                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
+            }
         }
     }
 
@@ -31,12 +36,15 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
             val response = amiiboApi.getAmiibosByTypeId(typeId)
             val data = response.body()
             return if (data == null) {
-                Result.failure(Throwable("null"))
+                Result.failure(AmiiboErrors.NoResults)
             } else {
                 Result.success(data)
             }
         }.onFailure {
-            return Result.failure(it)
+            return when (it) {
+                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
+            }
         }
     }
 
@@ -45,12 +53,15 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
             val response = amiiboApi.getAmiibosByGameSeriesName(gameSeriesName)
             val data = response.body()
             return if (data == null) {
-                Result.failure(Throwable("null"))
+                Result.failure(AmiiboErrors.NoResults)
             } else {
                 Result.success(data)
             }
         }.onFailure {
-            return Result.failure(it)
+            return when (it) {
+                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
+            }
         }
     }
 
@@ -59,12 +70,15 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
             val response = amiiboApi.getAmiibosByCharacterName(characterName)
             val data = response.body()
             return if (data == null) {
-                Result.failure(Throwable("null"))
+                Result.failure(AmiiboErrors.NoResults)
             } else {
                 Result.success(data)
             }
         }.onFailure {
-            return Result.failure(it)
+            return when (it) {
+                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
+            }
         }
     }
 
@@ -73,12 +87,15 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
             val response = amiiboApi.getAmiiboGameSeriesList()
             val data = response.body()
             return if (data == null) {
-                Result.failure(Throwable("null"))
+                Result.failure(AmiiboErrors.NoResults)
             } else {
                 Result.success(data)
             }
         }.onFailure {
-            return Result.failure(it)
+            return when (it) {
+                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
+            }
         }
     }
 
@@ -87,12 +104,15 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
             val response = amiiboApi.getAmiiboCharacterList()
             val data = response.body()
             return if (data == null) {
-                Result.failure(Throwable("null"))
+                Result.failure(AmiiboErrors.NoResults)
             } else {
                 Result.success(data)
             }
         }.onFailure {
-            return Result.failure(it)
+            return when (it) {
+                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
+            }
         }
     }
 }

@@ -28,9 +28,11 @@
     <string name="australia_release_label">Australia:</string>
 
     <string name="generic_error_title">Something Went Wrong</string>
-    <string name="generic_error_message">Please check your internet and try again</string>
+    <string name="generic_error_message">Please check your connection and try again</string>
     <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
+    <string name="no_internet_error">Internet Connection Failed</string>
+
 
 
 
