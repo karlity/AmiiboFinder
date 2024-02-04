@@ -26,7 +26,15 @@ class AmiiboDetailsViewModel(private val getAmiiboByAmiiboId: GetAmiiboByAmiiboI
                     it.copy(amiibo = amiibo.amiibo, loadingState = LoadingState.IDLE)
                 }
             }.onFailure {
-                val errorState = if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
+                val errorState =
+                    when (it) {
+                        is AmiiboErrors.NoInternet -> LoadingState.NO_INTERNET
+                        is AmiiboErrors.ServerError -> LoadingState.ERROR
+                        is AmiiboErrors.NoResults -> LoadingState.EMPTY
+                        else -> {
+                            LoadingState.ERROR
+                        }
+                    }
                 _uiState.update { state ->
                     state.copy(loadingState = errorState)
                 }

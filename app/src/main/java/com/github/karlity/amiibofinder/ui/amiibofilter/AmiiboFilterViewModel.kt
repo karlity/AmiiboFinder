@@ -55,7 +55,15 @@ class AmiiboFilterViewModel(
                 )
             }
         }.onFailure {
-            val errorState = if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
+            val errorState =
+                when (it) {
+                    is AmiiboErrors.NoInternet -> LoadingState.NO_INTERNET
+                    is AmiiboErrors.ServerError -> LoadingState.ERROR
+                    is AmiiboErrors.NoResults -> LoadingState.EMPTY
+                    else -> {
+                        LoadingState.ERROR
+                    }
+                }
             _uiState.update {
                 it.copy(loadingState = errorState)
             }
@@ -74,7 +82,8 @@ class AmiiboFilterViewModel(
                 )
             }
         }.onFailure {
-            val errorState = if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
+            val errorState =
+                if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
             _uiState.update {
                 it.copy(loadingState = errorState)
             }

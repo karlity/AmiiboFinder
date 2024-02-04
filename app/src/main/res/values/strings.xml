@@ -26,6 +26,9 @@
     <string name="japan_release_label">Japan:</string>
     <string name="europe_release_label">Europe:</string>
     <string name="australia_release_label">Australia:</string>
+    <string name="no_results">No Results</string>
+    <string name="no_results_icon">No Results Icon</string>
+
 
     <string name="generic_error_title">Something Went Wrong</string>
     <string name="generic_error_message">Please check your connection and try again</string>

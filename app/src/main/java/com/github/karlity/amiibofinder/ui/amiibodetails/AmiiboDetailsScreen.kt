@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.github.karlity.amiibofinder.ui.amiibodetails.components.AmiiboDetails
 import com.github.karlity.amiibofinder.ui.shared.AmiiboLoadingAndErrorStateHandler
 import com.github.karlity.amiibofinder.ui.shared.AmiiboTopAppBar
+import com.github.karlity.amiibofinder.ui.shared.EmptyState
+import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -53,6 +55,9 @@ fun AmiiboDetailsScreen(
     ) { paddingValues ->
         state.value.amiibo?.let { amiibo ->
             AmiiboDetails(amiibo = amiibo, modifier = Modifier.padding(paddingValues))
+        }
+        if (state.value.loadingState == LoadingState.EMPTY) {
+            EmptyState()
         }
     }
 

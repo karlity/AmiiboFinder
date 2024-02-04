@@ -176,4 +176,20 @@ class AmiiboFilterViewModelTest : AutoCloseKoinTest(), KoinTest {
                 }
             }
         }
+
+    @Test
+    fun `Given an empty response when fetching filtered response, then loadingState should be EMPTY`() =
+        runTest {
+            val viewModel = get<AmiiboFilterViewModel>()
+            val getCharacterList: GetCharacterList = get()
+            coEvery { getCharacterList() } returns Result.failure(AmiiboErrors.NoResults)
+
+            viewModel.viewModelScope.launch {
+                viewModel.setFilterCriteria(AmiiboFilterCritera.CHARACTER)
+                advanceUntilIdle()
+                viewModel.uiState.collect {
+                    assertEquals(LoadingState.EMPTY, it.loadingState)
+                }
+            }
+        }
 }

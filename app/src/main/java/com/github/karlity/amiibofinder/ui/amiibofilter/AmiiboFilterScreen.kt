@@ -12,11 +12,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.karlity.amiibofinder.ui.amiibofilter.components.AmiiboFilterSelectionView
 import com.github.karlity.amiibofinder.ui.amiibofilter.components.FilterList
 import com.github.karlity.amiibofinder.ui.shared.AmiiboLoadingAndErrorStateHandler
 import com.github.karlity.amiibofinder.ui.shared.AmiiboTopAppBar
+import com.github.karlity.amiibofinder.ui.shared.EmptyState
+import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -57,6 +60,11 @@ fun AmiiboFilterScreen(
             onGameSeriesSelect = { onNavigateToAmiiboList(null, null, it) },
             typeList = state.value.typeList,
         )
+
+        if (state.value.loadingState == LoadingState.EMPTY) {
+            EmptyState()
+        }
+
         AmiiboFilterSelectionView(filterCriteria = state.value.filterCriteria) { filter ->
             amiiboFilterViewModel.setFilterCriteria(filter)
         }
@@ -75,5 +83,12 @@ fun AmiiboFilterScreen(
 
     BackHandler(state.value.filterCriteria != null) {
         amiiboFilterViewModel.resetFilter()
+    }
+}
+
+@Composable
+@Preview
+private fun AmiiboFilterScreenPreview() {
+    AmiiboFilterScreen { type, characterName, gameSeriesName ->
     }
 }

@@ -55,7 +55,7 @@ fun AmiiboLoadingAndErrorStateHandler(
         }
 
         else -> {
-            // no op
+            // no op - other states handles elsewhere
         }
     }
 }

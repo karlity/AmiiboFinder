@@ -112,6 +112,24 @@ class AmiiboDetailsViewModelTest : AutoCloseKoinTest(), KoinTest {
         }
 
     @Test
+    fun `Given an empty response when fetching amiibo details, then loadingState should be EMPTY`() =
+        runTest {
+            val viewModel = get<AmiiboDetailsViewModel>()
+            val amiiboId = "amiibo123"
+            val getAmiiboByAmiiboId: GetAmiiboByAmiiboId = get()
+
+            coEvery { getAmiiboByAmiiboId.invoke(amiiboId) } returns Result.failure(AmiiboErrors.NoResults)
+
+            viewModel.viewModelScope.launch {
+                viewModel.fetchAmiiboDetails(amiiboId)
+                advanceUntilIdle()
+                viewModel.uiState.collect {
+                    assertEquals(LoadingState.EMPTY, it.loadingState)
+                }
+            }
+        }
+
+    @Test
     fun `Given a successful fetchAmiiboDetails followed by dismissError, then loadingState should be IDLE`() =
         runTest {
             val viewModel = get<AmiiboDetailsViewModel>()

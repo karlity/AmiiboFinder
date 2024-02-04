@@ -19,6 +19,8 @@ import com.github.karlity.amiibofinder.R
 import com.github.karlity.amiibofinder.ui.amiibolist.components.AmiiboList
 import com.github.karlity.amiibofinder.ui.shared.AmiiboLoadingAndErrorStateHandler
 import com.github.karlity.amiibofinder.ui.shared.AmiiboTopAppBar
+import com.github.karlity.amiibofinder.ui.shared.EmptyState
+import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -67,6 +69,10 @@ fun AmiiboListScreen(
                     .padding(paddingValues),
         ) { amiiboId ->
             onNavigateToAmiiboDetailsScreen(amiiboId)
+        }
+
+        if (state.value.loadingState == LoadingState.EMPTY) {
+            EmptyState()
         }
     }
 
