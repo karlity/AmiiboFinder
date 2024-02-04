@@ -22,6 +22,7 @@ ktlint = "12.1.0"
 material3-beta-version = "1.2.0-beta02"
 compose-coil = "2.2.2"
 coroutines-test-version = "1.7.1"
+timber = "5.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +80,9 @@ test-koin-android = { group = "io.insert-koin", name = "koin-android-test" }
 test-koin-junit = { group = "io.insert-koin", name = "koin-test-junit4" }
 test-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test-version" }
 # End Testing
+
+# Logging
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber"}
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

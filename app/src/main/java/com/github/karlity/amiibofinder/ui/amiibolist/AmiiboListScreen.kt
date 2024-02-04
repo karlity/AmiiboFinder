@@ -34,11 +34,13 @@ fun AmiiboListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = state.value.amiiboList == null) {
-        amiiboListViewModel.fetchAmiibos(
-            typeId = typeId,
-            characterName = characterName,
-            gameSeriesName = gameSeriesName,
-        )
+        if (state.value.amiiboList == null) {
+            amiiboListViewModel.fetchAmiibos(
+                typeId = typeId,
+                characterName = characterName,
+                gameSeriesName = gameSeriesName,
+            )
+        }
     }
 
     Scaffold(

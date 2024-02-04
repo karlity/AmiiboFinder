@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koin.android.annotation.KoinViewModel
+import timber.log.Timber
 
 @KoinViewModel
 class AmiiboListViewModel(
@@ -57,6 +58,7 @@ class AmiiboListViewModel(
                 _uiState.update { state ->
                     state.copy(loadingState = errorState)
                 }
+                Timber.e("Error fetching Amiibos: $it")
             }
         }
     }

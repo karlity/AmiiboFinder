@@ -30,7 +30,7 @@ fun AmiiboDetailsScreen(
     LaunchedEffect(key1 = state.value.amiibo == null) {
         amiiboId?.let {
             amiiboDetailsViewModel.fetchAmiiboDetails(amiiboId)
-        } // add ?: error state
+        } ?: amiiboDetailsViewModel.setError()
     }
 
     Scaffold(

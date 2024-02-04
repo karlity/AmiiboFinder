@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import timber.log.Timber
 
 @KoinViewModel
 class AmiiboDetailsViewModel(private val getAmiiboByAmiiboId: GetAmiiboByAmiiboId) : ViewModel() {
@@ -29,7 +30,14 @@ class AmiiboDetailsViewModel(private val getAmiiboByAmiiboId: GetAmiiboByAmiiboI
                 _uiState.update { state ->
                     state.copy(loadingState = errorState)
                 }
+                Timber.e("Error Amiibo Details: $it")
             }
+        }
+    }
+
+    fun setError() {
+        _uiState.update {
+            it.copy(loadingState = LoadingState.ERROR)
         }
     }
 
