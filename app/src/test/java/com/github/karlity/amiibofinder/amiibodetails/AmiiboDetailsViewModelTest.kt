@@ -1,8 +1,9 @@
 package com.github.karlity.amiibofinder.amiibodetails
 
-import AmiiboErrors
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.github.karlity.amiibofinder.core.AmiiboErrors
 import com.github.karlity.amiibofinder.core.rules.MainDispatcherRule
 import com.github.karlity.amiibofinder.domain.interactor.GetAmiiboByAmiiboId
 import com.github.karlity.amiibofinder.mocks.exampleSingleAmiibo
@@ -10,6 +11,7 @@ import com.github.karlity.amiibofinder.ui.amiibodetails.AmiiboDetailsViewModel
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -47,7 +49,8 @@ class AmiiboDetailsViewModelTest : AutoCloseKoinTest(), KoinTest {
         startKoin {
             modules(
                 module {
-                    viewModel<AmiiboDetailsViewModel> { AmiiboDetailsViewModel(get()) }
+                    single<SavedStateHandle> { spyk() }
+                    viewModel<AmiiboDetailsViewModel> { AmiiboDetailsViewModel(get(), get()) }
                     single<GetAmiiboByAmiiboId> { mockk() }
                 },
             )

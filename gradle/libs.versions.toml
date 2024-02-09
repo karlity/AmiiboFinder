@@ -23,6 +23,7 @@ material3-beta-version = "1.2.0-beta02"
 compose-coil = "2.2.2"
 coroutines-test-version = "1.7.1"
 timber = "5.0.1"
+core-testing = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +80,7 @@ test-koin = { group = "io.insert-koin", name = "koin-test" }
 test-koin-android = { group = "io.insert-koin", name = "koin-android-test" }
 test-koin-junit = { group = "io.insert-koin", name = "koin-test-junit4" }
 test-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test-version" }
+test-core = { group = "androidx.arch.core", name = "core-testing", version.ref = "core-testing"}
 # End Testing
 
 # Logging

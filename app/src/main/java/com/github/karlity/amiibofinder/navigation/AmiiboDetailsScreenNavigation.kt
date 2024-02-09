@@ -5,16 +5,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.github.karlity.amiibofinder.ui.amiibodetails.AmiiboDetailsScreen
 
-private val amiiboIdKey = "amiiboIdKey"
+val amiiboIdKey = "amiiboIdKey"
 private val amiiboIdArg = "{$amiiboIdKey}"
 
 val amiiboDetailsRoute = "amiiboDetails/$amiiboIdArg"
 
 fun NavGraphBuilder.amiiboDetailsScreen(onNavigateBack: () -> Unit) {
-    composable(amiiboDetailsRoute) { navBackStackEntry ->
-        val amiiboId = navBackStackEntry.arguments?.getString(amiiboIdKey)
-
-        AmiiboDetailsScreen(amiiboId = amiiboId) {
+    composable(amiiboDetailsRoute) {
+        AmiiboDetailsScreen {
             onNavigateBack()
         }
     }

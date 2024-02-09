@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,10 +51,22 @@ fun AmiiboLoadingAndErrorStateHandler(
 
         LoadingState.NO_INTERNET -> {
             LaunchedEffect(key1 = Unit) {
-                snackbarState.showSnackbar(
-                    message = noInternetError,
-                    duration = SnackbarDuration.Short,
-                )
+                val result =
+                    snackbarState.showSnackbar(
+                        withDismissAction = true,
+                        actionLabel = "Retry",
+                        message = noInternetError,
+                        duration = SnackbarDuration.Short,
+                    )
+                when (result) {
+                    SnackbarResult.Dismissed -> {
+                        onErrorDismiss()
+                    }
+
+                    SnackbarResult.ActionPerformed -> {
+                        onErrorConfirmationClick()
+                    }
+                }
             }
         }
 

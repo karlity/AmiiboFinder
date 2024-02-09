@@ -4,6 +4,7 @@ import com.github.karlity.amiibofinder.core.models.Amiibo
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
 
 data class AmiiboDetailsState(
+    val amiiboId: String? = null,
     val amiibo: Amiibo? = null,
     val loadingState: LoadingState = LoadingState.IDLE,
 )

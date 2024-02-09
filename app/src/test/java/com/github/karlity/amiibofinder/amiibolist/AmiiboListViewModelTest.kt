@@ -1,7 +1,9 @@
 package com.github.karlity.amiibofinder.amiibolist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.github.karlity.amiibofinder.core.AmiiboErrors
 import com.github.karlity.amiibofinder.core.rules.MainDispatcherRule
 import com.github.karlity.amiibofinder.domain.interactor.GetAmiibosByCharacterName
 import com.github.karlity.amiibofinder.domain.interactor.GetAmiibosByGameSeriesName
@@ -11,6 +13,7 @@ import com.github.karlity.amiibofinder.ui.amiibolist.AmiiboListViewModel
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -44,14 +47,13 @@ class AmiiboListViewModelTest : AutoCloseKoinTest(), KoinTest {
     @get:Rule
     val coroutineRule = MainDispatcherRule()
 
-    // private var amiiboListViewModel: AmiiboListViewModel = mockk()
-
     @Before
     fun setup() {
         startKoin {
             modules(
                 module {
-                    viewModel<AmiiboListViewModel> { AmiiboListViewModel(get(), get(), get()) }
+                    single<SavedStateHandle> { spyk() }
+                    viewModel<AmiiboListViewModel> { AmiiboListViewModel(get(), get(), get(), get()) }
                     single<GetAmiibosByCharacterName> { mockk() }
                     single<GetAmiibosByGameSeriesName> { mockk() }
                     single<GetAmiibosByTypeId> { mockk() }

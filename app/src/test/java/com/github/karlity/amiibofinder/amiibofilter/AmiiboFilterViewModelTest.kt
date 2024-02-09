@@ -1,8 +1,9 @@
 package com.github.karlity.amiibofinder.amiibofilter
 
-import AmiiboErrors
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.github.karlity.amiibofinder.core.AmiiboErrors
 import com.github.karlity.amiibofinder.core.rules.MainDispatcherRule
 import com.github.karlity.amiibofinder.domain.interactor.GetCharacterList
 import com.github.karlity.amiibofinder.domain.interactor.GetGameSeriesList
@@ -12,6 +13,7 @@ import com.github.karlity.amiibofinder.ui.amiibofilter.AmiiboFilterViewModel
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -23,6 +25,7 @@ import org.junit.Test
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.koin.ksp.generated.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -51,7 +54,8 @@ class AmiiboFilterViewModelTest : AutoCloseKoinTest(), KoinTest {
         startKoin {
             modules(
                 module {
-                    viewModel<AmiiboFilterViewModel> { AmiiboFilterViewModel(get(), get()) }
+                    single<SavedStateHandle> { spyk() }
+                    viewModel<AmiiboFilterViewModel> { AmiiboFilterViewModel(get(), get(), get()) }
                     single<GetGameSeriesList> { mockk() }
                     single<GetCharacterList> { mockk() }
                 },
@@ -169,7 +173,7 @@ class AmiiboFilterViewModelTest : AutoCloseKoinTest(), KoinTest {
 
                 assertEquals(LoadingState.ERROR, viewModel.uiState.first().loadingState)
 
-                viewModel.dismissError()
+                viewModel.resetFilter()
                 advanceUntilIdle()
                 viewModel.uiState.collect {
                     assertEquals(LoadingState.IDLE, it.loadingState)

@@ -8,7 +8,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -25,25 +24,14 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AmiiboListScreen(
-    typeId: String?,
-    characterName: String?,
-    gameSeriesName: String?,
     amiiboListViewModel: AmiiboListViewModel = koinViewModel(),
     onNavigateToAmiiboDetailsScreen: (amiiboId: String) -> Unit,
     onNavigateBack: () -> Unit,
 ) {
-    val state = amiiboListViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(key1 = state.value.amiiboList == null) {
-        if (state.value.amiiboList == null) {
-            amiiboListViewModel.fetchAmiibos(
-                typeId = typeId,
-                characterName = characterName,
-                gameSeriesName = gameSeriesName,
-            )
-        }
-    }
+    val viewModel = remember { amiiboListViewModel }
+    val state = viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -71,28 +59,31 @@ fun AmiiboListScreen(
             onNavigateToAmiiboDetailsScreen(amiiboId)
         }
 
-        if (state.value.loadingState == LoadingState.EMPTY) {
+        if (state.value.loadingState != LoadingState.IDLE && state.value.loadingState != LoadingState.LOADING) {
             EmptyState()
         }
     }
 
     AmiiboLoadingAndErrorStateHandler(
         loadingState = state.value.loadingState,
-        onErrorDismiss = { amiiboListViewModel.dismissError() },
+        onErrorDismiss = remember(viewModel) { { viewModel.dismissError() } },
         snackbarState = snackbarHostState,
-        onErrorConfirmationClick = {
-            amiiboListViewModel.fetchAmiibos(
-                typeId = typeId,
-                characterName = characterName,
-                gameSeriesName = gameSeriesName,
-            )
-        },
+        onErrorConfirmationClick =
+            remember(viewModel) {
+                {
+                    viewModel.fetchAmiibos(
+                        characterName = state.value.characterName,
+                        gameSeriesName = state.value.gameSeriesName,
+                        typeId = state.value.typeId,
+                    )
+                }
+            },
     )
 }
 
 @Composable
 @Preview
 private fun AmiiboListScreenPreview() {
-    AmiiboListScreen(null, null, null, onNavigateToAmiiboDetailsScreen = {}) {
+    AmiiboListScreen(onNavigateToAmiiboDetailsScreen = {}) {
     }
 }

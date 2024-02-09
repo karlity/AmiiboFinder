@@ -1,8 +1,11 @@
 package com.github.karlity.amiibofinder.ui.amiibofilter
 
-import AmiiboErrors
+import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.Companion.PRIVATE
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.karlity.amiibofinder.core.AmiiboErrors
 import com.github.karlity.amiibofinder.domain.interactor.GetCharacterList
 import com.github.karlity.amiibofinder.domain.interactor.GetGameSeriesList
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
@@ -15,6 +18,8 @@ import timber.log.Timber
 
 @KoinViewModel
 class AmiiboFilterViewModel(
+    @get:VisibleForTesting(otherwise = PRIVATE)
+    val handle: SavedStateHandle,
     private val getGameSeriesList: GetGameSeriesList,
     private val getCharacterList: GetCharacterList,
 ) : ViewModel() {
@@ -22,10 +27,13 @@ class AmiiboFilterViewModel(
     val uiState: StateFlow<AmiiboFilterState> = _uiState
 
     fun setFilterCriteria(filterCritera: AmiiboFilterCritera) {
+        setSavedFilterCriteria(filterCritera)
+
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
                     loadingState = LoadingState.LOADING,
+                    filterCriteria = getSavedFilterCriteria(),
                 )
             }
             when (filterCritera) {
@@ -48,7 +56,6 @@ class AmiiboFilterViewModel(
         getCharacterList().onSuccess { characterList ->
             _uiState.update {
                 it.copy(
-                    filterCriteria = AmiiboFilterCritera.CHARACTER,
                     characterList = characterList,
                     gameSeriesList = null,
                     loadingState = LoadingState.IDLE,
@@ -64,8 +71,8 @@ class AmiiboFilterViewModel(
                         LoadingState.ERROR
                     }
                 }
-            _uiState.update {
-                it.copy(loadingState = errorState)
+            _uiState.update { state ->
+                state.copy(loadingState = errorState)
             }
             Timber.e("Error fetching character list: $it")
         }
@@ -75,7 +82,6 @@ class AmiiboFilterViewModel(
         getGameSeriesList().onSuccess { gameSeriesList ->
             _uiState.update {
                 it.copy(
-                    filterCriteria = AmiiboFilterCritera.GAME,
                     gameSeriesList = gameSeriesList,
                     characterList = null,
                     loadingState = LoadingState.IDLE,
@@ -83,9 +89,16 @@ class AmiiboFilterViewModel(
             }
         }.onFailure {
             val errorState =
-                if (it is AmiiboErrors.NoInternet) LoadingState.NO_INTERNET else LoadingState.ERROR
-            _uiState.update {
-                it.copy(loadingState = errorState)
+                when (it) {
+                    is AmiiboErrors.NoInternet -> LoadingState.NO_INTERNET
+                    is AmiiboErrors.ServerError -> LoadingState.ERROR
+                    is AmiiboErrors.NoResults -> LoadingState.EMPTY
+                    else -> {
+                        LoadingState.ERROR
+                    }
+                }
+            _uiState.update { state ->
+                state.copy(loadingState = errorState)
             }
             Timber.e("Error fetching game series list: $it")
         }
@@ -94,7 +107,6 @@ class AmiiboFilterViewModel(
     private fun getTypeList() {
         _uiState.update {
             it.copy(
-                filterCriteria = AmiiboFilterCritera.TYPE,
                 gameSeriesList = null,
                 characterList = null,
                 loadingState = LoadingState.IDLE,
@@ -103,6 +115,7 @@ class AmiiboFilterViewModel(
     }
 
     fun resetFilter() {
+        setSavedFilterCriteria(null)
         _uiState.update {
             it.copy(
                 filterCriteria = null,
@@ -113,9 +126,13 @@ class AmiiboFilterViewModel(
         }
     }
 
-    fun dismissError() {
-        _uiState.update {
-            it.copy(loadingState = LoadingState.IDLE)
-        }
+    private fun getSavedFilterCriteria(): AmiiboFilterCritera? = handle.get<AmiiboFilterCritera>(FILTER_CRITERIA)
+
+    private fun setSavedFilterCriteria(filterCritera: AmiiboFilterCritera?) {
+        handle.set(FILTER_CRITERIA, filterCritera)
+    }
+
+    companion object {
+        const val FILTER_CRITERIA = "FILTER_CRITERIA"
     }
 }

@@ -1,7 +1,9 @@
-sealed class AmiiboErrors : Throwable() {
-    object NoResults : AmiiboErrors()
+package com.github.karlity.amiibofinder.core
 
-    object NoInternet : AmiiboErrors()
+sealed class AmiiboErrors : Throwable() {
+    data object NoResults : AmiiboErrors()
+
+    data object NoInternet : AmiiboErrors()
 
     data class ServerError(val errorMessage: String) : AmiiboErrors()
 }

@@ -27,8 +27,10 @@ fun AmiiboFilterScreen(
     amiiboFilterViewModel: AmiiboFilterViewModel = koinViewModel(),
     onNavigateToAmiiboList: (typeId: String?, characterName: String?, gameSeriesName: String?) -> Unit,
 ) {
-    val state = amiiboFilterViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val viewModel = remember { amiiboFilterViewModel }
+    val state = viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -37,9 +39,12 @@ fun AmiiboFilterScreen(
                 AmiiboTopAppBar(
                     title =
                         stringResource(it),
-                    onNavigateBack = {
-                        amiiboFilterViewModel.resetFilter()
-                    },
+                    onNavigateBack =
+                        remember(viewModel) {
+                            {
+                                viewModel.resetFilter()
+                            }
+                        },
                 )
             }
         },
@@ -63,28 +68,32 @@ fun AmiiboFilterScreen(
             typeList = state.value.typeList,
         )
 
-        if (state.value.loadingState == LoadingState.EMPTY) {
+        if (state.value.loadingState != LoadingState.IDLE && state.value.loadingState != LoadingState.LOADING) {
             EmptyState()
         }
 
-        AmiiboFilterSelectionView(filterCriteria = state.value.filterCriteria) { filter ->
-            amiiboFilterViewModel.setFilterCriteria(filter)
-        }
+        AmiiboFilterSelectionView(filterCriteria = state.value.filterCriteria, onSelectedFilter = viewModel::setFilterCriteria)
     }
 
     AmiiboLoadingAndErrorStateHandler(
         loadingState = state.value.loadingState,
         snackbarState = snackbarHostState,
-        onErrorDismiss = { amiiboFilterViewModel.dismissError() },
-        onErrorConfirmationClick = {
-            state.value.filterCriteria?.let { filter ->
-                amiiboFilterViewModel.setFilterCriteria(filterCritera = filter)
-            } ?: amiiboFilterViewModel.resetFilter()
-        },
+        onErrorDismiss =
+            remember(viewModel) {
+                { viewModel.resetFilter() }
+            },
+        onErrorConfirmationClick =
+            remember(viewModel) {
+                {
+                    state.value.filterCriteria?.let { filter ->
+                        viewModel.setFilterCriteria(filterCritera = filter)
+                    } ?: viewModel.resetFilter()
+                }
+            },
     )
 
     BackHandler(state.value.filterCriteria != null) {
-        amiiboFilterViewModel.resetFilter()
+        viewModel.resetFilter()
     }
 }
 

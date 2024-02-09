@@ -1,10 +1,15 @@
 package com.github.karlity.amiibofinder.ui.amiibolist
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.karlity.amiibofinder.core.AmiiboErrors
 import com.github.karlity.amiibofinder.domain.interactor.GetAmiibosByCharacterName
 import com.github.karlity.amiibofinder.domain.interactor.GetAmiibosByGameSeriesName
 import com.github.karlity.amiibofinder.domain.interactor.GetAmiibosByTypeId
+import com.github.karlity.amiibofinder.navigation.characterNameKey
+import com.github.karlity.amiibofinder.navigation.gameSeriesNameKey
+import com.github.karlity.amiibofinder.navigation.typeIdKey
 import com.github.karlity.amiibofinder.ui.shared.LoadingState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,12 +21,21 @@ import timber.log.Timber
 
 @KoinViewModel
 class AmiiboListViewModel(
+    handle: SavedStateHandle,
     private val getAmiibosByCharacterName: GetAmiibosByCharacterName,
     private val getAmiibosByGameSeriesName: GetAmiibosByGameSeriesName,
     private val getAmiibosByTypeId: GetAmiibosByTypeId,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AmiiboListState())
     val uiState: StateFlow<AmiiboListState> = _uiState
+
+    init {
+        val characterName = handle.get<String>(characterNameKey)
+        val gameSeriesName = handle.get<String>(gameSeriesNameKey)
+        val typeId = handle.get<String>(typeIdKey)
+
+        fetchAmiibos(typeId, characterName, gameSeriesName)
+    }
 
     // The intention is that only one of these parameters gets passed through
     fun fetchAmiibos(
@@ -30,7 +44,12 @@ class AmiiboListViewModel(
         gameSeriesName: String?,
     ) {
         _uiState.update {
-            it.copy(loadingState = LoadingState.LOADING)
+            it.copy(
+                loadingState = LoadingState.LOADING,
+                characterName = characterName,
+                gameSeriesName = gameSeriesName,
+                typeId = typeId,
+            )
         }
         viewModelScope.launch {
             val result =
@@ -38,12 +57,15 @@ class AmiiboListViewModel(
                     !typeId.isNullOrEmpty() -> {
                         getAmiibosByTypeId.invoke(typeId)
                     }
+
                     !characterName.isNullOrEmpty() -> {
                         getAmiibosByCharacterName.invoke(characterName)
                     }
+
                     !gameSeriesName.isNullOrEmpty() -> {
                         getAmiibosByGameSeriesName.invoke(gameSeriesName)
                     }
+
                     else -> {
                         Result.failure(Throwable("Incorrect values passed to AmiiboList"))
                     }
@@ -73,7 +95,7 @@ class AmiiboListViewModel(
 
     fun dismissError() {
         _uiState.update {
-            it.copy(loadingState = LoadingState.IDLE)
+            it.copy(loadingState = if (it.amiiboList == null) LoadingState.EMPTY else LoadingState.IDLE)
         }
     }
 }

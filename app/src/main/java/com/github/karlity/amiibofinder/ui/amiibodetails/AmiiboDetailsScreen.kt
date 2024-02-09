@@ -7,7 +7,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,20 +21,13 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AmiiboDetailsScreen(
-    amiiboId: String?,
     amiiboDetailsViewModel: AmiiboDetailsViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
 ) {
-    val state = amiiboDetailsViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(key1 = state.value.amiibo == null) {
-        if (state.value.amiibo == null) {
-            amiiboId?.let {
-                amiiboDetailsViewModel.fetchAmiiboDetails(amiiboId)
-            } ?: amiiboDetailsViewModel.setError()
-        }
-    }
+    val viewModel = remember { amiiboDetailsViewModel }
+    val state = viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -58,26 +50,32 @@ fun AmiiboDetailsScreen(
         state.value.amiibo?.let { amiibo ->
             AmiiboDetails(amiibo = amiibo, modifier = Modifier.padding(paddingValues))
         }
-        if (state.value.loadingState == LoadingState.EMPTY) {
+        if (state.value.loadingState != LoadingState.IDLE && state.value.loadingState != LoadingState.LOADING) {
             EmptyState()
         }
     }
     AmiiboLoadingAndErrorStateHandler(
         loadingState = state.value.loadingState,
-        onErrorDismiss = { amiiboDetailsViewModel.dismissError() },
+        onErrorDismiss =
+            remember(viewModel) {
+                { viewModel.dismissError() }
+            },
         snackbarState = snackbarHostState,
-        onErrorConfirmationClick = {
-            amiiboId?.let {
-                amiiboDetailsViewModel.fetchAmiiboDetails(
-                    amiiboId,
-                )
-            } ?: onNavigateBack()
-        },
+        onErrorConfirmationClick =
+            remember(viewModel) {
+                {
+                    state.value.amiiboId?.let { amiiboId ->
+                        viewModel.fetchAmiiboDetails(
+                            amiiboId,
+                        )
+                    } ?: onNavigateBack()
+                }
+            },
     )
 }
 
 @Composable
 @Preview
 private fun AmiiboDetailsScreenPreview() {
-    AmiiboDetailsScreen(amiiboId = "") {}
+    AmiiboDetailsScreen {}
 }
