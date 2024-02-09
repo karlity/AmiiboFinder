@@ -18,8 +18,7 @@ import timber.log.Timber
 
 @KoinViewModel
 class AmiiboFilterViewModel(
-    @get:VisibleForTesting(otherwise = PRIVATE)
-    val handle: SavedStateHandle,
+    private val handle: SavedStateHandle,
     private val getGameSeriesList: GetGameSeriesList,
     private val getCharacterList: GetCharacterList,
 ) : ViewModel() {
