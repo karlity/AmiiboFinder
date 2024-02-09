@@ -32,7 +32,7 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
 
     override suspend fun getCharacterList(): Result<FilterCriteriaResponseList> = suspendCatching { amiiboApi.getAmiiboCharacterList() }
 
-    suspend fun <T> suspendCatching(block: suspend () -> Response<T>): Result<T> {
+    private suspend fun <T> suspendCatching(block: suspend () -> Response<T>): Result<T> {
         return runCatching {
             block.invoke().toResult()
         }.getOrElse {
@@ -53,7 +53,7 @@ class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
             }
         }.onFailure {
             return when (it) {
-                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                is AmiiboErrors -> Result.failure(it)
                 else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
             }
         }
