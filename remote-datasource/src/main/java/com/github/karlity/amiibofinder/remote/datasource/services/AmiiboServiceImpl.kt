@@ -15,19 +15,33 @@ import java.io.IOException
 @Single(binds = [AmiiboService::class])
 @Named(Qualifiers.AMIIBO_SERVICE)
 class AmiiboServiceImpl(private val amiiboApi: AmiiboApi) : AmiiboService {
-    override suspend fun getAmiiboByAmiiboId(amiiboId: String): Result<AmiiboSingle> = amiiboApi.getAmiiboByAmiiboId(amiiboId).toResult()
+    override suspend fun getAmiiboByAmiiboId(amiiboId: String): Result<AmiiboSingle> =
+        suspendCatching { amiiboApi.getAmiiboByAmiiboId(amiiboId) }
 
-    override suspend fun getAmiibosByTypeId(typeId: String): Result<AmiiboList> = amiiboApi.getAmiibosByTypeId(typeId).toResult()
+    override suspend fun getAmiibosByTypeId(typeId: String): Result<AmiiboList> = suspendCatching { amiiboApi.getAmiibosByTypeId(typeId) }
 
     override suspend fun getAmiibosByGameSeriesName(gameSeriesName: String): Result<AmiiboList> =
-        amiiboApi.getAmiibosByGameSeriesName(gameSeriesName).toResult()
+        suspendCatching {
+            amiiboApi.getAmiibosByGameSeriesName(gameSeriesName)
+        }
 
     override suspend fun getAmiibosByCharacterName(characterName: String): Result<AmiiboList> =
-        amiiboApi.getAmiibosByCharacterName(characterName).toResult()
+        suspendCatching { amiiboApi.getAmiibosByCharacterName(characterName) }
 
-    override suspend fun getGameSeriesList(): Result<FilterCriteriaResponseList> = amiiboApi.getAmiiboGameSeriesList().toResult()
+    override suspend fun getGameSeriesList(): Result<FilterCriteriaResponseList> = suspendCatching { amiiboApi.getAmiiboGameSeriesList() }
 
-    override suspend fun getCharacterList(): Result<FilterCriteriaResponseList> = amiiboApi.getAmiiboCharacterList().toResult()
+    override suspend fun getCharacterList(): Result<FilterCriteriaResponseList> = suspendCatching { amiiboApi.getAmiiboCharacterList() }
+
+    suspend fun <T> suspendCatching(block: suspend () -> Response<T>): Result<T> {
+        return runCatching {
+            block.invoke().toResult()
+        }.getOrElse {
+            when (it) {
+                is IOException -> Result.failure(AmiiboErrors.NoInternet)
+                else -> Result.failure(AmiiboErrors.ServerError("Server Error: ${it.message}"))
+            }
+        }
+    }
 
     private fun <T> Response<T>.toResult(): Result<T> {
         return runCatching {

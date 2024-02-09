@@ -7,7 +7,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.karlity.amiibofinder.core.models.FilterCriteriaResponseList
 import com.github.karlity.amiibofinder.core.models.Type
 import com.github.karlity.amiibofinder.ui.amiibofilter.AmiiboFilterCritera
-import timber.log.Timber
 
 @Composable
 fun FilterList(
